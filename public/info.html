@@ -1,0 +1,85 @@
+<h1>Boids</h1>
+<p>
+	Boids (Bird-oids) is a program for simulating flocking behaviour.
+	Each boid follows 3 simple rules. In a group, they exhibit emergent behaviour.
+</p>
+
+<br />
+
+<h2>Rule 1: Avoidance</h2>
+<p>
+	Boids avoid crashing into one another, as well as other obstacles.
+</p>
+
+<code-block dedent style="white-space: pre">
+	→               ↗
+   →                ↘
+                  
+Too Close!      Move Apart
+</code-block>
+<br />
+
+<code-block dedent style="white-space: pre">
+	const acceleration = new Vec2(0,0);
+	for (const obstacle of obstacles) {
+		const distance = this.position.distanceTo(obstacle.position);
+		if (distance > obstacle.repelRadius) continue;
+
+		const displacement = this.position.clone().subtract(obstacle.position);
+		acceleration.add(displacement.multiply(obstacle.repelStrength));
+	}
+	
+	return acceleration;
+</code-block>
+
+<h2>Rule 2: Alignment</h2>
+<p>
+	Boids match the average velocity of their flock.
+</p>
+<code-block dedent style="white-space: pre">
+      →             →
+	   ←             →
+      →             →
+                  
+Find velocity      Align
+</code-block>
+
+<br />
+
+<code-block dedent style="white-space: pre">
+	acceleration.add(
+		this.#averageVelocity(flock)
+		.multiply(this.options.alignmentStrength)
+	);
+</code-block>
+
+<h2>Rule 3: Cohesion</h2>
+<p>
+	Boids move towards the center of their flock.
+</p>
+<code-block dedent style="white-space: pre">
+    →              ↘ 
+	 x              x  
+    →              ↗
+                  
+Find center      Converge
+</code-block>
+
+<br />
+
+<code-block dedent style="white-space: pre">
+	acceleration.add(
+		this.#displacementFromCenter(flock)
+		.multiply(this.options.cohesionStrength)
+	);
+</code-block>
+
+<br />
+
+<br />
+<h3>See Also:</h3>
+<ul>
+	<li><a href="https://github.com/TheCymaera/boids" target="_blank">Source code on GitHub</a></li>
+	<li><a href="https://www.youtube.com/watch?v=RgxZzHCI4Z4" target="_blank">Boids in Minecraft</a></li>
+</ul>
+
