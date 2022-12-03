@@ -1,8 +1,8 @@
-import { Duration } from "open-utilities/core";
-import { Rect, Vec2 } from "open-utilities/geometry";
+import { Duration } from "open-utilities/datetime";
+import { Rect, Vector2 } from "open-utilities/geometry";
 
 export interface Obstacle {
-	readonly position: Vec2;
+	readonly position: Vector2;
 	readonly repelRadius: number;
 	readonly repelStrength: number;
 }
@@ -19,8 +19,8 @@ export class Boid implements Obstacle {
 
 	options = Boid.defaultOptions;
 
-	position = new Vec2(0,0);
-	velocity = new Vec2(3,0);
+	position = new Vector2(0,0);
+	velocity = new Vector2(3,0);
 
 	// this should be equal to velocity unless velocity is zero.
 	// this will give us a non-zero vector for rendering.
@@ -33,7 +33,7 @@ export class Boid implements Obstacle {
 	update(elapsedTime: Duration, boids: ReadonlySet<Boid>, obstacles: ReadonlySet<Obstacle>, bounds: Rect) {
 		const flock = this.#getInRange(boids, this.options.flockRadius);
 		
-		const acceleration = new Vec2(0,0);
+		const acceleration = new Vector2(0,0);
 		acceleration.add(this.#stayInBounds(bounds));
 
 		// avoidance
@@ -56,8 +56,8 @@ export class Boid implements Obstacle {
 		if (this.velocity.length() !== 0) this.direction = this.velocity.clone();
 	}
 
-	#stayInBounds(bounds: Rect): Vec2 {
-		const acceleration = new Vec2(0,0);
+	#stayInBounds(bounds: Rect): Vector2 {
+		const acceleration = new Vector2(0,0);
 
 		if (this.position.x < bounds.x1) acceleration.x = this.options.boundsRepelStrength;
 		if (this.position.y < bounds.y1) acceleration.y = this.options.boundsRepelStrength;
@@ -68,10 +68,10 @@ export class Boid implements Obstacle {
 		return acceleration;
 	}
 
-	#averageVelocity(flock: ReadonlySet<Boid>): Vec2 {
-		if (flock.size == 0) return new Vec2(0,0);
+	#averageVelocity(flock: ReadonlySet<Boid>): Vector2 {
+		if (flock.size == 0) return new Vector2(0,0);
 
-		const avg = new Vec2(0,0);
+		const avg = new Vector2(0,0);
 		for (const other of flock) avg.add(other.velocity);
 		avg.divide(flock.size);
 
@@ -79,9 +79,9 @@ export class Boid implements Obstacle {
 	}
 
 	#displacementFromCenter(flock: ReadonlySet<Boid>) {
-		if (flock.size == 0) return new Vec2(0,0);
+		if (flock.size == 0) return new Vector2(0,0);
 
-		const center = new Vec2(0,0);
+		const center = new Vector2(0,0);
 		for (const other of flock) center.add(other.position);
 		center.multiply(1.0/flock.size);
 
@@ -89,7 +89,7 @@ export class Boid implements Obstacle {
 	}
 
 	#awayFrom(obstacles: ReadonlySet<Obstacle>) {
-		const acceleration = new Vec2(0,0);
+		const acceleration = new Vector2(0,0);
 		for (const obstacle of obstacles) {
 			const distance = this.position.distanceTo(obstacle.position);
 			if (distance > obstacle.repelRadius) continue;

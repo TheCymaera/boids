@@ -37,52 +37,41 @@ $page_og_type 			= "website";
     <meta property="og:type"  content="<?php echo $page_og_type;?>"/>
 
 	<!-- styles -->
-	<link rel="stylesheet" type="text/css" href="/shared/helion/v1/dst/index.css"/>
+	<link rel="stylesheet" type="text/css" href="/shared/helion/v1/index.css"/>
 	<link rel="stylesheet" type="text/css" href="/shared/fontawesome-free-5.13.1-web/css/all.min.css"/>
-	<link rel="stylesheet" type="text/css" href="./dst/main.css"/>
 
 	<!-- scripts -->
-	<script type="module" src="/shared/helion/v1/dst/index.js"></script>
+	<script type="module" src="/shared/site/dst/widgets/canvas-app/index.js"></script>
+	<script type="module" src="/shared/helion/v1/index.js"></script>
 	<script type="module" src="./dst/main.js"></script>
 </head>
 <body class="stack">
-	<canvas class="fill-window"></canvas>
-	<div id="pressScreenMessage" style="
-		padding: .5em; 
-		display: flex; 
-		align-items: end;
-		font-size: 2vmin;
-		
-		pointer-events: none; 
-		opacity: 1; 
-		transition: opacity .3s ease; 
-		will-change: opacity;
-	">
-		Press the screen to place an obstacle.
-	</div>
-	<div class="layout action-buttons">
-		<button class="circle-button js-toggleDialog" title="Info">
-			<i class="fa fa-info"></i>
-		</button>
-		<button class="circle-button js-share" title="Share">
-			<i class="fa fa-share"></i>
-		</button>
-		<span style="flex: 1;"></span>
-		<a class="circle-button" title="Home" href="/">
-			<i class="fa fa-home"></i>
-		</a>
-	</div>
-	<panel- style="overflow: auto;">
-		<div style="margin: auto; max-width: 800px; width: 100%; padding: 1em;">
+	<site-canvas-app>
+		<stack- slot=canvas style="
+			background-color: var(--altSurface-background);
+			color: var(--altSurface-foreground);
+			
+			user-select: none;
+			-webkit-user-select: none;
+		">
+			<canvas></canvas>
+			<div id="pressScreenMessage" style="
+				padding: .5em; 
+				display: flex; 
+				align-items: end;
+				font-size: 2vmin;
+				
+				pointer-events: none; 
+				opacity: 1; 
+				transition: opacity .3s ease; 
+				will-change: opacity;
+			">
+				Press the screen to place an obstacle.
+			</div>
+		</stack->
+		<div slot=info>
 			<?php include "./info.html"; ?>
-			<div style="height: 300px;"></div>
 		</div>
-
-		<div class="layout fill-window action-buttons">
-			<button class="circle-button js-toggleDialog" title="Close"> 
-				<i class="fa fa-times"></i>
-			</button>
-		</div>
-	</panel->
+	</site-canvas-app>
 </body>
 </html>

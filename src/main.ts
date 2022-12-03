@@ -1,31 +1,22 @@
-import { Circle, Path, Rect, Vec2 } from "open-utilities/geometry";
-import { AnimationFrameScheduler, Canvas2DRenderer } from "open-utilities/rendering-web";
-import "./ui.js";
-import "./ui.scss";
+import { Circle, Matrix4, Path, Rect, Vector2 } from "open-utilities/geometry";
+import { AnimationFrameScheduler, HTMLCanvas2D } from "open-utilities/ui";
 import { Boid, Obstacle } from "./Boid.js";
 import { Color, ShapeStyle } from "open-utilities/ui";
 
 const canvas = document.querySelector("canvas")!;
-const renderer = Canvas2DRenderer.fromCanvas(canvas);
+const renderer = HTMLCanvas2D.fromCanvas(canvas);
+const viewport = Rect.zero.clone();
 
 new ResizeObserver(()=>{
-	const viewportLength = 80 / window.devicePixelRatio;
-	const minCanvasLength = 1000;
-	
+	const maxViewportLength = 80;
+
 	const ratio = canvas.clientHeight / canvas.clientWidth;
-	if (ratio > 1) {
-		const canvasLength = Math.max(minCanvasLength, canvas.clientWidth);
+	const width  = maxViewportLength * (ratio < 1 ? 1 : 1 / ratio);
+	const height = maxViewportLength * (ratio < 1 ? ratio : 1);
 
-		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength, viewportLength * ratio));
-		canvas.width = canvasLength;
-		canvas.height = canvasLength * ratio;
-	} else {
-		const canvasLength = Math.max(minCanvasLength, canvas.clientHeight);
-
-		renderer.setViewportRect(Rect.fromCenter(Vec2.zero, viewportLength / ratio, viewportLength));
-		canvas.width = canvasLength / ratio;
-		canvas.height = canvasLength;
-	}
+	renderer.setBitmapDimensions(new Vector2(canvas.clientWidth * devicePixelRatio, canvas.clientHeight * devicePixelRatio));
+	viewport.copy(Rect.fromCenter(Vector2.zero, width, height));
+	renderer.setTransform(Matrix4.ortho(viewport));
 
 	draw();
 }).observe(canvas);
@@ -42,7 +33,7 @@ for (let i = 0; i < 200; i++) {
 AnimationFrameScheduler.periodic((elapsedTime)=>{
 	if (elapsedTime.milliseconds > 100) elapsedTime.milliseconds = 100;
 
-	const bounds = renderer.viewportRect().clone();
+	const bounds = viewport.clone();
 	bounds.deflate(Math.min(bounds.height, bounds.width) * .2);
 
 	for (const boid of boids) boid.update(elapsedTime, boids, obstacles, bounds);
@@ -51,7 +42,7 @@ AnimationFrameScheduler.periodic((elapsedTime)=>{
 
 
 function draw() {
-	const color = Canvas2DRenderer.sampleCSSColor(window.getComputedStyle(document.body).getPropertyValue("color"));
+	const color = HTMLCanvas2D.sampleCSSColor(window.getComputedStyle(canvas).getPropertyValue("color"));
 
 	renderer.clear();
 	for (const boid of boids) {
@@ -60,10 +51,10 @@ function draw() {
 		const back1 = boid.position.clone().add(direction.clone().multiply(.3).rotate(Math.PI * 2 / 3 * 1));
 		const back2 = boid.position.clone().add(direction.clone().multiply(.3).rotate(Math.PI * 2 / 3 * 2));
 
-		renderer.drawShape(
+		renderer.drawPath(
 			new Path().setOrigin(front).lineTo(back1).lineTo(boid.position).lineTo(back2).close(),
 			new ShapeStyle({
-				fillColor: color,
+				fill: color,
 			})
 		)
 	}
@@ -71,7 +62,7 @@ function draw() {
 		renderer.drawCircle(
 			new Circle(obstacle.position, obstacle.repelRadius),
 			new ShapeStyle({
-				fillColor: Color.fromRGBA(color.r,color.g,color.b,30),
+				fill: Color.fromRGBA(color.r,color.g,color.b,30),
 			})
 		);
 	}
@@ -79,22 +70,23 @@ function draw() {
 
 
 const mouseObstacle = new class implements Obstacle {
-	position = Vec2.zero;
+	position = Vector2.zero;
 	repelRadius = 5;
 	repelStrength = 2.2;
 }
 
 const updateMouseCoordinate = (event: MouseEvent)=>{
-	const mouseClientPosition = new Vec2(event.clientX, event.clientY);
-	mouseObstacle.position = Rect.mapPointOnto(renderer.clientRect(), mouseClientPosition, renderer.viewportRect());
+	const clientCoord = new Vector2(event.clientX, event.clientY);
+	mouseObstacle.position = clientCoord.transformMatrix4(renderer.getClientInverseTransform());
 }
 
 canvas.onpointermove = updateMouseCoordinate;
 
+const pressScreenMessage = document.getElementById("pressScreenMessage")!;
 canvas.onpointerdown = (event)=>{
 	updateMouseCoordinate(event);
 	obstacles.add(mouseObstacle);
-	document.getElementById("pressScreenMessage")!.style.opacity = "0";
+	pressScreenMessage.style.opacity = "0";
 }
 
 canvas.onpointerup = ()=>{
@@ -104,5 +96,5 @@ canvas.onpointerup = ()=>{
 
 console.log(`For debugging, see "app"`)
 Object.defineProperty(window, "app", {
-	value: {  canvas, boids, renderer },
+	value: {  canvas, boids, renderer, obstacles, mouseObstacle },
 });
