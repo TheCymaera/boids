@@ -1,0 +1,35 @@
+.CanvasApp_ActionButtons {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	padding: .5em;
+	gap: .5em;
+	box-sizing: border-box;
+}
+
+.CanvasApp_DialogContents {
+	margin: auto;
+	width: min(100%, 800px);
+	padding: 0 1em;
+}
+
+.CanvasApp_Dialog {
+	opacity: 0;
+	transition: opacity 0.2s;
+	pointer-events: none;
+}
+
+.CanvasApp_Dialog:not([data-opened]) * {
+	pointer-events: none !important;
+}
+
+.CanvasApp_Dialog[data-opened] {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.CanvasApp_Button > svg {
+	width: 1.3em;
+	height: 1em;
+	fill: currentColor;
+}

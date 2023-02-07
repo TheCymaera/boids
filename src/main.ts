@@ -1,12 +1,38 @@
-import { Circle, Matrix4, Path, Rect, Vector2 } from "open-utilities/geometry";
-import { AnimationFrameScheduler, HTMLCanvas2D } from "open-utilities/ui";
-import { Boid, Obstacle } from "./Boid.js";
-import { Color, ShapeStyle } from "open-utilities/ui";
+import { Boid, type Obstacle } from "./Boid.js";
+import { ArraySet } from "open-utilities/core/dataStructures/mod.js";
+import { Matrix4, Path, Rect, Vector2 } from "open-utilities/core/maths/mod.js";
+import { AnimationFrameScheduler, HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
+import { Circle } from "open-utilities/core/maths/mod.js";
+import { Color, ShapeStyle } from "open-utilities/core/ui/mod.js";
+import { CanvasApp } from "./ui/CanvasApp/CanvasApp.js";
 
-const canvas = document.querySelector("canvas")!;
+import "./ui/main.css";
+import infoHTML from "./ui/info.html";
+import {} from "helion/CodeBlock.js";
+
+const canvasApp = new CanvasApp;
+
+// info
+canvasApp.dialog.innerHTML = infoHTML;
+canvasApp.setGithubLink("https://github.com/TheCymaera/boids");
+
+// canvas
+const canvas = document.createElement("canvas");
+canvas.style.backgroundColor = "transparent";
+canvasApp.addLayer(canvas);
+
+// press screen message
+const pressScreenMessage = document.createElement("div");
+pressScreenMessage.textContent = "Press the screen to place an obstacle.";
+pressScreenMessage.classList.add("PressScreenMessage");
+canvasApp.addLayer(pressScreenMessage);
+
+document.body.append(canvasApp.node);
+
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
-const viewport = Rect.zero.clone();
 
+// adapt to screen size
+const viewport = Rect.zero.clone();
 new ResizeObserver(()=>{
 	const maxViewportLength = 80;
 
@@ -22,14 +48,17 @@ new ResizeObserver(()=>{
 }).observe(canvas);
 
 
-const boids = new Set<Boid>();
-const obstacles = new Set<Obstacle>();
+const boids = new ArraySet<Boid>();
+const obstacles = new ArraySet<Obstacle>();
+
+// create random boids
 for (let i = 0; i < 200; i++) {
 	const boid = new Boid();
 	boid.velocity.rotate(Math.random() * Math.PI * 2);
 	boids.add(boid);
 }
 
+// main loop
 AnimationFrameScheduler.periodic((elapsedTime)=>{
 	if (elapsedTime.milliseconds > 100) elapsedTime.milliseconds = 100;
 
@@ -42,14 +71,15 @@ AnimationFrameScheduler.periodic((elapsedTime)=>{
 
 
 function draw() {
-	const color = HTMLCanvas2D.sampleCSSColor(window.getComputedStyle(canvas).getPropertyValue("color"));
+	const color = HTMLCanvas2D.sampleCSSColor(getComputedStyle(canvas).getPropertyValue("color"));
 
 	renderer.clear();
+
 	for (const boid of boids) {
-		const direction = boid.direction.clone().normalize().multiply(boid.repelRadius);
-		const front = boid.position.clone().add(direction.clone().multiply(.5));
-		const back1 = boid.position.clone().add(direction.clone().multiply(.3).rotate(Math.PI * 2 / 3 * 1));
-		const back2 = boid.position.clone().add(direction.clone().multiply(.3).rotate(Math.PI * 2 / 3 * 2));
+		const direction = boid.velocity.clone().normalize() ?? new Vector2(1,0);
+		const front = boid.position.clone().add(direction.clone().multiply(boid.repelRadius * .5));
+		const back1 = boid.position.clone().add(direction.clone().multiply(boid.repelRadius * .3).rotate(Math.PI * 2 / 3 * 1));
+		const back2 = boid.position.clone().add(direction.clone().multiply(boid.repelRadius * .3).rotate(Math.PI * 2 / 3 * 2));
 
 		renderer.drawPath(
 			new Path().setOrigin(front).lineTo(back1).lineTo(boid.position).lineTo(back2).close(),
@@ -58,6 +88,7 @@ function draw() {
 			})
 		)
 	}
+
 	for (const obstacle of obstacles) {
 		renderer.drawCircle(
 			new Circle(obstacle.position, obstacle.repelRadius),
@@ -82,7 +113,6 @@ const updateMouseCoordinate = (event: MouseEvent)=>{
 
 canvas.onpointermove = updateMouseCoordinate;
 
-const pressScreenMessage = document.getElementById("pressScreenMessage")!;
 canvas.onpointerdown = (event)=>{
 	updateMouseCoordinate(event);
 	obstacles.add(mouseObstacle);
@@ -96,5 +126,7 @@ canvas.onpointerup = ()=>{
 
 console.log(`For debugging, see "app"`)
 Object.defineProperty(window, "app", {
-	value: {  canvas, boids, renderer, obstacles, mouseObstacle },
+	value: { canvas, boids, renderer, obstacles, mouseObstacle },
 });
+
+window["Vector2"] = Vector2;

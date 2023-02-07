@@ -1,0 +1,30 @@
+html, body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+}
+
+body > .CanvasApp {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+canvas {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.PressScreenMessage {
+	padding: .5em; 
+	display: flex; 
+	align-items: end;
+	font-size: 2vmin;
+	
+	pointer-events: none; 
+	opacity: 1; 
+	transition: opacity .3s ease; 
+	will-change: opacity;
+}

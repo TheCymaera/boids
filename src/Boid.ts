@@ -1,12 +1,12 @@
-import { Duration } from "open-utilities/datetime";
-import { Rect, Vector2 } from "open-utilities/geometry";
+import { Duration } from "open-utilities/core/datetime/mod.js";
+import { Rect, Vector2 } from "open-utilities/core/maths/mod.js";
+import { ArraySet } from "open-utilities/core/dataStructures/mod.js";
 
 export interface Obstacle {
 	readonly position: Vector2;
 	readonly repelRadius: number;
 	readonly repelStrength: number;
 }
-
 
 export class Boid implements Obstacle {
 	static readonly defaultOptions = Object.freeze(new class implements Boid.Option {
@@ -21,10 +21,6 @@ export class Boid implements Obstacle {
 
 	position = new Vector2(0,0);
 	velocity = new Vector2(3,0);
-
-	// this should be equal to velocity unless velocity is zero.
-	// this will give us a non-zero vector for rendering.
-	direction = this.velocity.clone();
 	
 	repelRadius = 1;
 	repelStrength = .5;
@@ -50,10 +46,9 @@ export class Boid implements Obstacle {
 		this.velocity.add(acceleration);
 
 		// keep velocity below max velocity
-		if (this.velocity.length() > this.options.maxVelocity) this.velocity.normalize().multiply(this.options.maxVelocity);
+		if (this.velocity.length() > this.options.maxVelocity) this.velocity.normalize()?.multiply(this.options.maxVelocity);
 
 		this.position.add(this.velocity.clone().multiply(elapsedTime.seconds));
-		if (this.velocity.length() !== 0) this.direction = this.velocity.clone();
 	}
 
 	#stayInBounds(bounds: Rect): Vector2 {
@@ -88,7 +83,7 @@ export class Boid implements Obstacle {
 		return center.subtract(this.position);
 	}
 
-	#awayFrom(obstacles: ReadonlySet<Obstacle>) {
+	#awayFrom(obstacles: Iterable<Obstacle>) {
 		const acceleration = new Vector2(0,0);
 		for (const obstacle of obstacles) {
 			const distance = this.position.distanceTo(obstacle.position);
@@ -102,12 +97,12 @@ export class Boid implements Obstacle {
 	}
 
 	#getInRange(boids: ReadonlySet<Boid>, radius: number) {
-		const out = new Set<Boid>();
+		const out: Boid[] = [];
 		for (const other of boids) {
 			const distance = this.position.distanceTo(other.position);
-			if (distance < radius) out.add(other);
+			if (distance < radius) out.push(other);
 		}
-		return out;
+		return new ArraySet<Boid>(out);
 	}
 }
 

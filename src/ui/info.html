@@ -11,15 +11,15 @@
 	Boids avoid crashing into one another, as well as other obstacles.
 </p>
 
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
 	→               ↗
    →                ↘
                   
 Too Close!      Move Apart
-</code-block>
+</helion-code-block>
 <br />
 
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
 	const acceleration = new Vec2(0,0);
 	for (const obstacle of obstacles) {
 		const distance = this.position.distanceTo(obstacle.position);
@@ -30,49 +30,49 @@ Too Close!      Move Apart
 	}
 	
 	return acceleration;
-</code-block>
+</helion-code-block>
 
 <h2>Rule 2: Alignment</h2>
 <p>
 	Boids match the average velocity of their flock.
 </p>
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
       →             →
 	   ←             →
       →             →
                   
 Find velocity      Align
-</code-block>
+</helion-code-block>
 
 <br />
 
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
 	acceleration.add(
 		this.#averageVelocity(flock)
 		.multiply(this.options.alignmentStrength)
 	);
-</code-block>
+</helion-code-block>
 
 <h2>Rule 3: Cohesion</h2>
 <p>
 	Boids move towards the center of their flock.
 </p>
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
     →              ↘ 
 	 x              x  
     →              ↗
                   
 Find center      Converge
-</code-block>
+</helion-code-block>
 
 <br />
 
-<code-block dedent style="white-space: pre">
+<helion-code-block dedent style="white-space: pre">
 	acceleration.add(
 		this.#displacementFromCenter(flock)
 		.multiply(this.options.cohesionStrength)
 	);
-</code-block>
+</helion-code-block>
 
 <br />
 
@@ -83,3 +83,4 @@ Find center      Converge
 	<li><a href="https://www.youtube.com/watch?v=RgxZzHCI4Z4" target="_blank">Boids in Minecraft</a></li>
 </ul>
 
+<div style="height: 50vh;"></div>
