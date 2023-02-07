@@ -6,12 +6,13 @@ import {} from "helion/Panel.js";
 import {} from "helion/AltSurface.js";
 import {} from "helion/CircleButton.js";
 import {} from "helion/LightTheme.js";
-import { fa5_brands_github, fa5_solid_home, fa5_solid_info, fa5_solid_times } from "fontawesome-svgs";
+import { fa5_brands_github, fa5_solid_home, fa5_solid_info, fa5_solid_share, fa5_solid_times } from "fontawesome-svgs";
 
 const html = /* html */ `
 <helion-stack class="CanvasApp helion-alt-surface">
 	<helion-intangible class="CanvasApp_ActionButtons">
 		<button class="helion-circle-button CanvasApp_Button CanvasApp_ToggleDialog">${fa5_solid_info}</button>
+		<button class="helion-circle-button CanvasApp_Button CanvasApp_Share">${fa5_solid_share}</button>
 		<div style="flex: 1;"></div>
 		<a><!-- GitHub link --></a>
 		<a class="helion-circle-button CanvasApp_Button" href="/">${fa5_solid_home}</a>
@@ -47,6 +48,21 @@ export class CanvasApp {
 		const toggleDialogButtons = this.node.querySelectorAll(".CanvasApp_ToggleDialog") as NodeListOf<HTMLButtonElement>;
 		for (const button of toggleDialogButtons) {
 			button.onclick = () => this.toggleDialogOpen();
+		}
+
+		const shareButton = this.node.querySelector(".CanvasApp_Share") as HTMLButtonElement;
+
+		const shareData = {
+			title: document.title,
+			url: location.href,
+		};
+
+		shareButton.onclick = () => {
+			navigator.share(shareData);
+		};
+
+		if (!("share" in navigator && navigator.canShare(shareData))) {
+			shareButton.style.display = "none";
 		}
 	}
 
