@@ -3,7 +3,6 @@
 	Boids (Bird-oids) is a program for simulating flocking behaviour.
 	Each boid follows 3 simple rules. In a group, they exhibit emergent behaviour.
 </p>
-
 <br />
 
 <h2>Rule 1: Avoidance</h2>
@@ -31,6 +30,7 @@ Too Close!      Move Apart
 	
 	return acceleration;
 </helion-code-block>
+<br />
 
 <h2>Rule 2: Alignment</h2>
 <p>
@@ -52,6 +52,7 @@ Find velocity      Align
 		.multiply(this.options.alignmentStrength)
 	);
 </helion-code-block>
+<br />
 
 <h2>Rule 3: Cohesion</h2>
 <p>

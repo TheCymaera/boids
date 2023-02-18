@@ -4,16 +4,16 @@ import { Matrix4, Path, Rect, Vector2 } from "open-utilities/core/maths/mod.js";
 import { AnimationFrameScheduler, HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
 import { Circle } from "open-utilities/core/maths/mod.js";
 import { Color, ShapeStyle } from "open-utilities/core/ui/mod.js";
-import { CanvasApp } from "./ui/CanvasApp/CanvasApp.js";
+import { CanvasApp } from "@heledron/ui/CanvasApp.js";
 
-import "./ui/main.css";
-import infoHTML from "./ui/info.html";
+import "./main.css";
+import infoHTML from "./info.html?raw";
 import {} from "helion/CodeBlock.js";
 
 const canvasApp = new CanvasApp;
 
 // info
-canvasApp.dialog.innerHTML = infoHTML;
+canvasApp.infoDialog.innerHTML = infoHTML;
 canvasApp.setGithubLink("https://github.com/TheCymaera/boids");
 
 // canvas
@@ -27,6 +27,7 @@ pressScreenMessage.textContent = "Press the screen to place an obstacle.";
 pressScreenMessage.classList.add("PressScreenMessage");
 canvasApp.addLayer(pressScreenMessage);
 
+canvasApp.node.classList.add("helion-fill-parent");
 document.body.append(canvasApp.node);
 
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
