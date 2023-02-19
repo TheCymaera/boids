@@ -3,12 +3,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-		"build": "vite build"
+    "build": "vite build"
   },
   "dependencies": {
     "@heledron/ui": "link:/Users/morgannew/Desktop/code/web/misc/npm-packages/heledron-ui",
     "fontawesome-svgs": "^1.0.2",
     "helion": "link:~/Desktop/code/web/misc/npm-packages/helion-v2/",
     "open-utilities": "link:~/Desktop/code/web/misc/npm-packages/open-utilities/"
+  },
+  "devDependencies": {
+    "vite": "^4.1.2"
   }
 }
