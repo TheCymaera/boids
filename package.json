@@ -5,10 +5,6 @@
     "dev": "vite dev",
 		"build": "vite build"
   },
-  "devDependencies": {
-    "vite": "^4.1.2",
-    "vite-plugin-html": "^3.2.0"
-  },
   "dependencies": {
     "@heledron/ui": "link:/Users/morgannew/Desktop/code/web/misc/npm-packages/heledron-ui",
     "fontawesome-svgs": "^1.0.2",
