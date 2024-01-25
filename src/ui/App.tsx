@@ -2,9 +2,8 @@ import { fa5_brands_github, fa5_solid_home, fa5_solid_info, fa5_solid_share, fa5
 import { Show, createSignal, onMount } from "solid-js";
 import "./skin.css";
 import "./main.css";
-import info from "./info.html?raw";
 
-export function App({ layers }: { layers: Element[] }) {
+export function App({ layers, info, githubLink }: { layers: Element[], info: string, githubLink: string }) {
 	const [ dialogOpened, setDialogOpened ] = createSignal(false);
 
 	let dialog = document.createElement("div");
@@ -31,7 +30,7 @@ export function App({ layers }: { layers: Element[] }) {
 				<button class="CircleButton" innerHTML={fa5_solid_share} onClick={() => navigator.share(shareData)} />
 			</Show>
 			<div style="flex: 1;"></div>
-			<a class="CircleButton" href="https://github.com/TheCymaera/boids" target="_blank" innerHTML={fa5_brands_github} />
+			<a class="CircleButton" href={githubLink} target="_blank" innerHTML={fa5_brands_github} />
 			<a class="CircleButton" href="/" innerHTML={fa5_solid_home} />
 		</div>
 		

@@ -7,6 +7,7 @@ import { Color, ShapeStyle } from "open-utilities/core/ui/mod.js";
 
 import { render } from "solid-js/web";
 import { App } from "./ui/App.jsx";
+import info from "./info.html?raw";
 
 const canvas = document.createElement("canvas");
 const message = document.createElement("div");
@@ -20,7 +21,11 @@ message.style.opacity="1";
 message.style.transition="opacity .3s ease"; 
 message.textContent = "Press the screen to place an obstacle.";
 
-render(()=>App({ layers: [canvas, message] }), document.body);
+render(()=>App({ 
+	layers: [canvas, message], 
+	info: info,
+	githubLink: "https://github.com/TheCymaera/boids"
+}), document.body);
 
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
 

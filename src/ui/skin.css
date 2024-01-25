@@ -19,6 +19,7 @@ html, body {
 
 	background-color: var(--surface);
 	color: var(--onSurface);
+	accent-color: var(--primary);
 
 	font-family: Tahoma, sans-serif;
 
