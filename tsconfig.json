@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "ESNext",
-		"target": "ESNext",
+		"module": "NodeNext",
+		"target": "ES2022",
 
 		"moduleResolution": "nodenext",
 		
@@ -20,5 +20,8 @@
 		"lib": ["ES2020", "DOM", "DOM.Iterable"],
 
 		"baseUrl": ".",
+		
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
 	}
 }

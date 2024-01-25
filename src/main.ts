@@ -4,31 +4,23 @@ import { Matrix4, Path, Rect, Vector2 } from "open-utilities/core/maths/mod.js";
 import { AnimationFrameScheduler, HTMLCanvas2D } from "open-utilities/web/ui/mod.js";
 import { Circle } from "open-utilities/core/maths/mod.js";
 import { Color, ShapeStyle } from "open-utilities/core/ui/mod.js";
-import { CanvasApp } from "@heledron/ui/CanvasApp.js";
 
-import "./main.css";
-import infoHTML from "./info.html?raw";
-import {} from "helion/CodeBlock.js";
+import { render } from "solid-js/web";
+import { App } from "./ui/App.jsx";
 
-const canvasApp = new CanvasApp;
-
-// info
-canvasApp.infoDialog.innerHTML = infoHTML;
-canvasApp.setGithubLink("https://github.com/TheCymaera/boids");
-
-// canvas
 const canvas = document.createElement("canvas");
-canvas.style.backgroundColor = "transparent";
-canvasApp.addLayer(canvas);
+const message = document.createElement("div");
 
-// press screen message
-const pressScreenMessage = document.createElement("div");
-pressScreenMessage.textContent = "Press the screen to place an obstacle.";
-pressScreenMessage.classList.add("PressScreenMessage");
-canvasApp.addLayer(pressScreenMessage);
+message.style.padding=".5em";
+message.style.display="flex";
+message.style.alignItems="end";
+message.style.fontSize="2vmin";
+message.style.pointerEvents="none";
+message.style.opacity="1";
+message.style.transition="opacity .3s ease"; 
+message.textContent = "Press the screen to place an obstacle.";
 
-canvasApp.node.classList.add("helion-fill-parent");
-document.body.append(canvasApp.node);
+render(()=>App({ layers: [canvas, message] }), document.body);
 
 const renderer = HTMLCanvas2D.fromCanvas(canvas);
 
@@ -117,7 +109,7 @@ canvas.onpointermove = updateMouseCoordinate;
 canvas.onpointerdown = (event)=>{
 	updateMouseCoordinate(event);
 	obstacles.add(mouseObstacle);
-	pressScreenMessage.style.opacity = "0";
+	message.style.opacity = "0";
 }
 
 canvas.onpointerup = ()=>{

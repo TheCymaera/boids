@@ -10,15 +10,15 @@
 	Boids avoid crashing into one another, as well as other obstacles.
 </p>
 
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
 	→               ↗
    →                ↘
                   
 Too Close!      Move Apart
-</helion-code-block>
+</code>
 <br />
 
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
 	const acceleration = new Vec2(0,0);
 	for (const obstacle of obstacles) {
 		const distance = this.position.distanceTo(obstacle.position);
@@ -29,51 +29,51 @@ Too Close!      Move Apart
 	}
 	
 	return acceleration;
-</helion-code-block>
+</code>
 <br />
 
 <h2>Rule 2: Alignment</h2>
 <p>
 	Boids match the average velocity of their flock.
 </p>
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
       →             →
 	   ←             →
       →             →
                   
 Find velocity      Align
-</helion-code-block>
+</code>
 
 <br />
 
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
 	acceleration.add(
 		this.#averageVelocity(flock)
 		.multiply(this.options.alignmentStrength)
 	);
-</helion-code-block>
+</code>
 <br />
 
 <h2>Rule 3: Cohesion</h2>
 <p>
 	Boids move towards the center of their flock.
 </p>
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
     →              ↘ 
 	 x              x  
     →              ↗
                   
 Find center      Converge
-</helion-code-block>
+</code>
 
 <br />
 
-<helion-code-block dedent style="white-space: pre">
+<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
 	acceleration.add(
 		this.#displacementFromCenter(flock)
 		.multiply(this.options.cohesionStrength)
 	);
-</helion-code-block>
+</code>
 
 <br />
 
