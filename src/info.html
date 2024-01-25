@@ -10,7 +10,7 @@
 	Boids avoid crashing into one another, as well as other obstacles.
 </p>
 
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
 	→               ↗
    →                ↘
                   
@@ -18,7 +18,7 @@ Too Close!      Move Apart
 </code>
 <br />
 
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
 	const acceleration = new Vec2(0,0);
 	for (const obstacle of obstacles) {
 		const distance = this.position.distanceTo(obstacle.position);
@@ -36,7 +36,7 @@ Too Close!      Move Apart
 <p>
 	Boids match the average velocity of their flock.
 </p>
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
       →             →
 	   ←             →
       →             →
@@ -46,7 +46,7 @@ Find velocity      Align
 
 <br />
 
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
 	acceleration.add(
 		this.#averageVelocity(flock)
 		.multiply(this.options.alignmentStrength)
@@ -58,7 +58,7 @@ Find velocity      Align
 <p>
 	Boids move towards the center of their flock.
 </p>
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
     →              ↘ 
 	 x              x  
     →              ↗
@@ -68,7 +68,7 @@ Find center      Converge
 
 <br />
 
-<code class="dedent" style="display: block; padding: .5rem; white-space: pre">
+<code class="dedent" style="display: block; padding: .5em; white-space: pre; overflow: auto;">
 	acceleration.add(
 		this.#displacementFromCenter(flock)
 		.multiply(this.options.cohesionStrength)
